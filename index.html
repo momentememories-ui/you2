@@ -28,14 +28,15 @@
         }
         #ui-layer {
             position: absolute;
-            bottom: 15%;
+            bottom: 10%;
             z-index: 2;
             text-align: center;
             pointer-events: none;
             width: 100%;
+            transition: opacity 0.5s ease;
         }
         .instruction {
-            font-size: clamp(16px, 4vw, 22px);
+            font-size: clamp(14px, 4vw, 18px);
             color: #ffb3c1;
             animation: fade 2s infinite;
             margin: 0;
@@ -60,7 +61,6 @@
         const canvas = document.getElementById("heart");
         const ctx = canvas.getContext("2d");
         const music = document.getElementById("bgMusic");
-        const statusText = document.getElementById("status-text");
         const uiLayer = document.getElementById("ui-layer");
 
         function resize() {
@@ -83,21 +83,20 @@
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // แก้ไขจุดนี้: ระบุใช้ฟอนต์ 'Prompt' ใน Canvas
             ctx.fillStyle = "#ff8fa3";
-            ctx.font = "300 18px 'Prompt', sans-serif"; 
+            // ✅ ใช้ฟอนต์ Prompt เหมือน UI
+            ctx.font = "bold 14px 'Prompt', sans-serif";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
 
-            let scale = Math.min(canvas.width / 35, canvas.height / 45); 
+            let scale = Math.min(canvas.width / 45, canvas.height / 55); 
 
-            // วาดรูปหัวใจจากข้อความ
             for (let i = 0; i < 60; i++) {
                 let angle = t + i * 0.2; 
                 let pos = heartFunction(angle);
 
                 let x = canvas.width / 2 + pos.x * scale;
-                let y = (canvas.height / 2 - 20) + pos.y * scale;
+                let y = (canvas.height / 2) + pos.y * scale;
 
                 ctx.fillText("เค้ารักซันน♡", x, y);
             }
@@ -108,7 +107,7 @@
 
         const playMusic = () => {
             music.play().then(() => {
-                uiLayer.style.display = "none";
+                uiLayer.style.opacity = "0";
             }).catch(err => {
                 console.log(err);
                 uiLayer.style.display = "none";
@@ -118,7 +117,7 @@
         window.addEventListener('click', playMusic);
         window.addEventListener('touchstart', playMusic);
 
-        // รอให้ Font โหลดเสร็จก่อนเริ่มวาด (ช่วยให้ฟอนต์ Prompt แสดงผลตั้งแต่ครั้งแรก)
+        // ✅ รอ font โหลดก่อนค่อยเริ่มวาด
         document.fonts.ready.then(() => {
             draw();
         });
